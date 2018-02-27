@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CassandraCSharpDriver_Sample.Cli", "CassandraCSharpDriver_Sample.Cli\CassandraCSharpDriver_Sample.Cli.csproj", "{6EF919C5-28EE-43B9-9576-217BECE4B00B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CassandraCSharpDriver_Sample.DAL", "CassandraCSharpDriver_Sample.DAL\CassandraCSharpDriver_Sample.DAL.csproj", "{C2659BAC-A483-4CBE-B36B-B3FB02BE9D92}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CassandraCSharpDriver_Sample.DAL.Tests", "CassandraCSharpDriver_Sample.DAL.Tests\CassandraCSharpDriver_Sample.DAL.Tests.csproj", "{2E38BDBB-5D7C-4094-AA13-427C679E3C02}"
@@ -22,10 +20,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6EF919C5-28EE-43B9-9576-217BECE4B00B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6EF919C5-28EE-43B9-9576-217BECE4B00B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6EF919C5-28EE-43B9-9576-217BECE4B00B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6EF919C5-28EE-43B9-9576-217BECE4B00B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C2659BAC-A483-4CBE-B36B-B3FB02BE9D92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C2659BAC-A483-4CBE-B36B-B3FB02BE9D92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2659BAC-A483-4CBE-B36B-B3FB02BE9D92}.Release|Any CPU.ActiveCfg = Release|Any CPU
