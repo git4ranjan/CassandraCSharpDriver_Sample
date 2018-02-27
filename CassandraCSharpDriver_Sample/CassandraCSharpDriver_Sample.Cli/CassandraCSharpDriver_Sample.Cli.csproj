@@ -5,4 +5,12 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="CassandraCSharpDriver" Version="3.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CassandraCSharpDriver_Sample.DAL\CassandraCSharpDriver_Sample.DAL.csproj" />
+  </ItemGroup>
+
 </Project>

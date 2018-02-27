@@ -1,17 +1,20 @@
-﻿using System;
-using System.Text;
+﻿// pluskal
+
+using System;
+using CassandraCSharpDriver_Sample.DAL.Interfaces;
 
 namespace CassandraCSharpDriver_Sample.DAL.Entities
 {
-    public class User
+    public class User : IDataModel
     {
-        public Guid UserId { get; set; }
-        public String Name { get; set; }
         public String Group { get; set; }
+        public String Name { get; set; }
+        public Guid Id { get; set; }
 
         public override String ToString()
         {
-            return $"{nameof(this.UserId)}: {this.UserId}, {nameof(this.Name)}: {this.Name}, {nameof(this.Group)}: {this.Group}";
+            return
+                $"{nameof(this.Id)}: {this.Id}, {nameof(this.Name)}: {this.Name}, {nameof(this.Group)}: {this.Group}";
         }
     }
 }
