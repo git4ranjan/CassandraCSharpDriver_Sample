@@ -2,8 +2,6 @@
 
 using System;
 using Cassandra;
-using Cassandra.Mapping;
-using CassandraCSharpDriver_Sample.DAL;
 
 namespace CassandraCSharpDriver_Sample.Cli
 {
@@ -22,8 +20,6 @@ namespace CassandraCSharpDriver_Sample.Cli
                 // .WithCredentials("cassandra", "cassandrapwd")
                 //.WithDefaultKeyspace(KeySpace.Replace("\"", ""))
                 .Build();
-
-            MappingConfiguration.Global.Define<EntityMappings>();
         }
     }
 }

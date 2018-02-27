@@ -5,7 +5,7 @@ using CassandraCSharpDriver_Sample.DAL.Entities;
 
 namespace CassandraCSharpDriver_Sample.DAL
 {
-    public class EntityMappings : Mappings
+    internal class EntityMappings : Mappings
     {
         public EntityMappings()
         {
