@@ -8,18 +8,14 @@ using CassandraCSharpDriver_Sample.DAL.Interfaces;
 
 namespace CassandraCSharpDriver_Sample.DAL
 {
-    public abstract class CassandraUnitOfWork : IUnitOfWork
+    public class CassandraUnitOfWork : IUnitOfWork
     {
         private static Boolean _setUpDone;
 
-        protected CassandraUnitOfWork()
+        public CassandraUnitOfWork(ICluster cluster, Mappings mappings)
         {
-            var cluster = Cluster.Builder()
-                .AddContactPoint("127.0.0.1")
-                .Build();
-
-            this.Session = cluster.Connect();
-            DoOneTimeSetUp();
+            DoOneTimeSetUp(mappings);
+            this.Session = cluster.Connect(); 
         }
 
         public ISession Session { get; }
@@ -41,12 +37,12 @@ namespace CassandraCSharpDriver_Sample.DAL
 
         public void SaveChanges()
         {
-            throw new NotImplementedException();
+            
         }
 
         public Task SaveChangesAsync()
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public void Dispose()
@@ -54,11 +50,11 @@ namespace CassandraCSharpDriver_Sample.DAL
             this.Session?.Dispose();
         }
 
-        private static void DoOneTimeSetUp()
+        private static void DoOneTimeSetUp(Mappings mappings)
         {
             if (_setUpDone) return;
 
-            MappingConfiguration.Global.Define<EntityMappings>();
+            MappingConfiguration.Global.Define(mappings);
             _setUpDone = true;
         }
     }

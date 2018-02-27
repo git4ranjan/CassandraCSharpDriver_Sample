@@ -1,5 +1,4 @@
 ﻿// pluskal
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +6,8 @@ using System.Threading.Tasks;
 using Cassandra;
 using Cassandra.Data.Linq;
 using CassandraCSharpDriver_Sample.DAL.Interfaces;
+using System.Diagnostics.Contracts;
+using JetBrains.Annotations;
 
 namespace CassandraCSharpDriver_Sample.DAL.Repositories
 {
@@ -15,9 +16,15 @@ namespace CassandraCSharpDriver_Sample.DAL.Repositories
     {
         protected readonly ISession Session;
 
-        public CassandraRepository(CassandraUnitOfWork unitOfWork)
+        public CassandraRepository([NotNull]IUnitOfWork unitOfWork)
         {
-            this.Session = unitOfWork.Session;
+            if (unitOfWork == null)
+                throw new ArgumentException("IUnitOfWork cannot be null");
+            if (!(unitOfWork is CassandraUnitOfWork))
+                throw new ArgumentException("IUnitOfWork is not implemented by CassandraUnitOfWork class");
+
+            this.Session = ((CassandraUnitOfWork) unitOfWork).Session;
+
             this.Table = this.Session.GetTable<TEntity>();
 
             this.Table.CreateIfNotExists(); //TODO is this a right place?
@@ -27,7 +34,7 @@ namespace CassandraCSharpDriver_Sample.DAL.Repositories
 
         public IEnumerable<TEntity> GetAll()
         {
-            return this.Table.Execute();
+            return this.Table.Select(i => i).Execute();
         }
 
         public TEntity GetById(Guid id)
@@ -35,25 +42,32 @@ namespace CassandraCSharpDriver_Sample.DAL.Repositories
             return this.Table.First(entity => entity.Id == id).Execute();
         }
 
-        public Task<IEnumerable<TEntity>> GetAllAsync()
+        public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await this.Table.Select(i => i).ExecuteAsync();
+
         }
 
-        public Task<TEntity> GetByIdAsync(Guid id)
+        public async Task<TEntity> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await this.Table.First(entity => entity.Id == id).ExecuteAsync();
         }
 
         public TEntity Delete(Guid id)
         {
             var item = this.GetById(id);
+            if (item == null)
+                throw new ArgumentException($"Item with {id} was not found, thus cannot be deleted.");
+
             this.Delete(item);
             return item;
         }
 
         public TEntity Delete(TEntity item)
         {
+            if(item == null)
+                throw new ArgumentNullException("TEntity item cannot be null.");
+
             this.Table.Where(i => i.Id == item.Id)
                 .Delete()
                 .Execute();
@@ -62,50 +76,82 @@ namespace CassandraCSharpDriver_Sample.DAL.Repositories
 
         public TEntity Insert(TEntity item)
         {
+            if (item == null)
+                throw new ArgumentNullException("TEntity item cannot be null.");
+
             this.Table.Insert(item).Execute();
             return item;
         }
 
         public IEnumerable<TEntity> InsertRange(IEnumerable<TEntity> items)
         {
+            if (items == null)
+                throw new ArgumentNullException("TEntity item cannot be null.");
             // Todo rewrite to appropriate bulk implementation
             var insertRange = items as TEntity[] ?? items.ToArray();
-            foreach (var item in insertRange) this.Table.Insert(item);
+            foreach (var item in insertRange) this.Insert(item);
 
             return insertRange;
         }
 
         public void Update(TEntity item)
         {
-            this.Table.Where(i => i.Id == item.Id)
-                .Select(_ => item)
-                .Update()
-                .Execute();
+            if (item == null)
+                throw new ArgumentNullException("TEntity item cannot be null.");
+
+            this.Delete(item);
+            this.Insert(item);
         }
 
-        public Task<TEntity> DeleteAsync(Guid id)
+        public async Task<TEntity> DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var item = await this.GetByIdAsync(id);
+            if(item==null)
+                throw new ArgumentException($"Item with {id} was not found, thus cannot be deleted.");
+
+            await this.DeleteAsync(item);
+            return item;
         }
 
-        public Task<TEntity> DeleteAsync(TEntity item)
+        public async Task<TEntity> DeleteAsync(TEntity item)
         {
-            throw new NotImplementedException();
+            if (item == null)
+                throw new ArgumentNullException("TEntity item cannot be null.");
+
+            var result = await this.Table.Where(i => i.Id == item.Id)
+                .Delete()
+                .ExecuteAsync();
+            return item;
         }
 
-        public Task<TEntity> InsertAsync(TEntity item)
+        public async Task<TEntity> InsertAsync(TEntity item)
         {
-            throw new NotImplementedException();
+            if (item == null)
+                throw new ArgumentNullException("TEntity item cannot be null.");
+
+            await this.Table.Insert(item).ExecuteAsync();
+            return item;
         }
 
-        public Task<IEnumerable<TEntity>> InsertRangeAsync(IEnumerable<TEntity> items)
+        public async Task<IEnumerable<TEntity>> InsertRangeAsync(IEnumerable<TEntity> items)
         {
-            throw new NotImplementedException();
+            if (items == null)
+                throw new ArgumentNullException("TEntity item cannot be null.");
+
+            // Todo rewrite to appropriate bulk implementation
+            var insertRange = items as TEntity[] ?? items.ToArray();
+            foreach (var item in insertRange) await this.InsertAsync(item);
+
+            return insertRange;
         }
 
-        public Task UpdateAsync(TEntity item)
+        public async Task UpdateAsync(TEntity item)
         {
-            throw new NotImplementedException();
+            if (item == null)
+                throw new ArgumentNullException("TEntity item cannot be null.");
+
+            await this.DeleteAsync(item);
+            await this.InsertAsync(item);
         }
     }
 }

@@ -1,18 +1,15 @@
-﻿// pluskal
+﻿using Cassandra.Mapping;
 
-using Cassandra.Mapping;
-using CassandraCSharpDriver_Sample.DAL.Entities;
-
-namespace CassandraCSharpDriver_Sample.DAL
+namespace CassandraCSharpDriver_Sample.DAL.Tests
 {
-    public class EntityMappings : Mappings
+    internal class EntityMappings : Mappings
     {
         public EntityMappings()
         {
             // Define mappings in the constructor of your class
             // that inherits from Mappings
-            this.For<User>()
-                .TableName("users")
+            this.For<Foo>()
+                .TableName("Foos")
                 .PartitionKey(u => u.Id)
                 .Column(u => u.Id, cm => cm.WithName("id"));
         }
